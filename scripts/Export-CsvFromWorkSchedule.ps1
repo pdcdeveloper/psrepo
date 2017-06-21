@@ -6,7 +6,6 @@ Date            : Monday, June 19, 2017
 Original Author : pdcdeveloper (https://github.com/pdcdeveloper)
 Co-Authors      : 
 
- 
 The MIT License (MIT)
 
 Copyright (c) 2016 pdcdeveloper
@@ -33,24 +32,20 @@ SOFTWARE.
 Synopsis:
     See function Export-CsvFromWorkScheduleSelection.SYNOPSIS.
     
-    
-
 Description:
     See function Export-CsvFromWorkScheduleSelection.DESCRIPTION.
     
-
-
 For co-authors:
     Scroll all the way down to MAIN.
     
-
-
+    It is recommended to use the directory path provided by the $PWD variable.
+This is the present working directory and will always be the directory path that
+this script is located in.
+    
 Revisions:
 
     +20170619
         
-
-
 
 ##################################################################################>
 
@@ -295,8 +290,10 @@ no confirmation dialog.
 
 
 <##################################################################################
-MAIN:
+MAIN
 ##################################################################################>
+
+# Ease of access.
 $EMPLOYEE_NAME = "employee header";
 $DATES_COLUMN = "date header";
 $STARTING_DATE = "";
