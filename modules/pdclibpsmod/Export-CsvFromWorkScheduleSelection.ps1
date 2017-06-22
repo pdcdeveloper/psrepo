@@ -91,22 +91,25 @@ will not be exported.
 
 
 .PARAMETER [string]Employee
-    Column header.  Each row in this column has information about the employee's work schedule.
+    Column header.  All rows in this column are assumed to be information about the employee's
+work schedule, including empty values, which could be interpreted as days off.
 
 
 .PARAMETER [string]DatesHeader
-    Column header.  Each row in this column will be parsed for date strings.
+    Column header.  Each row in this column will be parsed for date strings using
+[DateTime]::TryParse().  If this function encounters a date string that it is unable to parse,
+it will terminate immediately.
 
 
 .PARAMETER [string]StartingDate
     Determines the starting index by comparing against the row of values in the Dates column.
 An example valid date string formats is "yyyy/MM/dd".
-    This parameter is for historical reasons.  If this parameter is not used, the value
-[DateTime]::Today will be used everytime this function is called.
+    If this parameter is not used, the value [DateTime]::Today will be used everytime this
+function is called.
 
 
 .PARAMETER [int]MaxResults
-    The desired range of values from StartingDate.
+    The desired range of values used in conjunction with StartingDate.
 
 
 .PARAMETER [Switch]OverwriteOutputFile
