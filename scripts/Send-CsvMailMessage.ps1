@@ -67,6 +67,10 @@ Revisions:
 [string]$ICLOUD_SERVER = "smtp.mail.me.com";
 [string]$OUTLOOK_SERVER = "smtp.outlook.com";
 
+<##################################################################################
+MAIN
+##################################################################################>
+
 # Ease of access.
 [string]$FROM = "email@outlook.com";
 [string]$TO = "email@outlook.com";
@@ -75,9 +79,6 @@ Revisions:
 [string]$SERVER = $OUTLOOK_SERVER;
 
 
-<##################################################################################
-MAIN
-##################################################################################>
 
 # Find the attachment and format it for the body.
 $attachment = $null;
@@ -114,4 +115,4 @@ Send-MailMessage -From $FROM -To $TO -Subject $SUBJECT_LINE -Attachments $ATTACH
 # Clean-up
 Remove-Variable credential;
 
-Read-Host -Prompt "Done.";
+Read-Host -Prompt "Press the ANY key.";

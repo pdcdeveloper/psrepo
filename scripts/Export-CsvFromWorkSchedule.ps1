@@ -6,6 +6,7 @@ Date            : Monday, June 19, 2017
 Original Author : pdcdeveloper (https://github.com/pdcdeveloper)
 Co-Authors      : 
 
+
 The MIT License (MIT)
 
 Copyright (c) 2016 pdcdeveloper
@@ -132,7 +133,6 @@ no confirmation dialog.
         [string]$Employee,
         
         [parameter(Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
         [string]$StartingDate,
 
         [parameter(Mandatory=$false)]
@@ -149,7 +149,7 @@ no confirmation dialog.
         # Input file path validation.
         if (!(Test-Path $InputFilePath)) {
             Write-Error -Message "Input file was not found.";
-            return;
+            return $null;
         }
 
         Write-Host "Input file path is $InputFilePath";
@@ -159,29 +159,29 @@ no confirmation dialog.
         if (!([string]::IsNullOrEmpty($OutputDirectory))) {
             if (!(Test-Path $OutputDirectory)) {
                 Write-Error -Message "Output directory path is invalid.";
-                return;
+                return $null;
             }
         }
 
 
         # Locals.  Trust the GC.
         $inputCsv = Import-Csv -LiteralPath $InputFilePath;
-        [int]$startingIndex = -1;
-        $start = [DateTime]::Today;
-        $date = [DateTime]::Today;
+        [int]$startingIndex = -1;   # Determines which row to start from
+        $start = [DateTime]::Today; # The StartingDate parameter is parsed into this variable
+        $date = [DateTime]::Today;  # Values from the DatesHeader column are parsed into this variable to compare against $start
 
 
         # Extra validation for the date column.
         if (!($inputCsv | Get-Member -Name $DatesHeader)) {
             Write-Error -Message "Unable to find the dates column.";
-            return;
+            return $null;
         }
 
 
         # Extra validation for the employee column.
         if (!($inputCsv | Get-Member -Name $Employee)) {
             Write-Error -Message "Unable to find the employee column.";
-            return;
+            return $null;
         }
 
 
@@ -192,12 +192,15 @@ no confirmation dialog.
                 $start = [DateTime]::Today;
             }
         }
+		else {
+			Write-Debug -Message "Starting date input was empty.  Today's date will be used.";
+		}
 
 
         # Compare the first date.
         if (!([DateTime]::TryParse($inputCsv.$DatesHeader[0], [ref]$date))) {
             Write-Error -Message "Unable to parse the date values under the date column.";
-            return;
+            return $null;
         }
         elseif ($date -gt $start) {
             Write-Host "The DeLorean did not reach 88mph.  Missing flux capacitor.";
@@ -213,7 +216,7 @@ no confirmation dialog.
             if (!([DateTime]::TryParse($inputCsv.$DatesHeader[$inputCsv.Length - 1], [ref]$date))) {
                 Write-Error -Message "Unable to parse the date values under the date column.";
                 
-                return;
+                return $null;
             }
             elseif ($date -lt $start) {
                 Write-Host "Missing crystal ball.";
@@ -231,7 +234,7 @@ no confirmation dialog.
             for ($i = 1; $i -lt $inputCsv.Length - 1; $i++) {
                 if (!([DateTime]::TryParse($inputCsv.$DatesHeader[$i], [ref]$date))) {
                     Write-Error -Message "Unable to parse the date values under the date column.";
-                    return;
+                    return $null;
                 }
 
                 if ($date -eq $start) {
@@ -245,13 +248,13 @@ no confirmation dialog.
         # Make sure a starting index was found.
         if ($startingIndex -lt 0 -or $startingIndex -ge $inputCsv.Length) {
             Write-Error -Message "Unable to find a valid starting index.  $startingIndex";
-            return;
+            return $null;
         }
 
 
 
         # Filter the csv and collect the results.
-        $prettyPrint = $null;
+        $prettyPrint = $null; # out var
         if (!([string]::IsNullOrEmpty($OutputDirectory))) {
             # Remove illegal characters from the file name.
             $outFileName = $Employee;
@@ -282,14 +285,9 @@ no confirmation dialog.
             $inputCsv[$startingIndex..($startingIndex + $MaxResults - 1)] | Select-Object $DatesHeader, $Employee -OutVariable prettyPrint;
         }
 
-        # Show
-        $prettyPrint | Format-Table
-
-        return;
+        return $prettyPrint;
     }
 }
-
-
 
 
 <##################################################################################
@@ -297,19 +295,18 @@ MAIN
 ##################################################################################>
 
 # Ease of access.
-$EMPLOYEE_NAME = "employee header";
-$DATES_COLUMN = "date header";
+$EMPLOYEE_NAME = "employee name column header";
+$DATES_COLUMN = "date column header";
 $STARTING_DATE = "";
 $MAX_RESULTS = "256";
-$INPUT_FILE_PATH = "$PWD\workschedule.csv";
+$INPUT_FILE_PATH = "$PWD\testworkschedule.csv";
 $OUTPUT_DIRECTORY = $PWD;
 $ALWAYS_OVERWRITE_FILE = $true;
 
-
-
 if ($ALWAYS_OVERWRITE_FILE) {
-    Export-CsvFromWorkScheduleSelection -InputFilePath $INPUT_FILE_PATH -OutputDirectory $OUTPUT_DIRECTORY -Employee $EMPLOYEE_NAME -DatesHeader $DATES_COLUMN -StartingDate $STARTING_DATE -MaxResults $MAX_RESULTS -OverwriteOutputFile
+    Export-CsvFromWorkScheduleSelection -InputFilePath $INPUT_FILE_PATH -OutputDirectory $OUTPUT_DIRECTORY -Employee $EMPLOYEE_NAME -DatesHeader $DATES_COLUMN -StartingDate $STARTING_DATE -MaxResults $MAX_RESULTS -OverwriteOutputFile | Format-Table
 }
 else {
-    Export-CsvFromWorkScheduleSelection -InputFilePath $INPUT_FILE_PATH -OutputDirectory $OUTPUT_DIRECTORY -Employee $EMPLOYEE_NAME -DatesHeader $DATES_COLUMN -StartingDate $STARTING_DATE -MaxResults $MAX_RESULTS
+    Export-CsvFromWorkScheduleSelection -InputFilePath $INPUT_FILE_PATH -OutputDirectory $OUTPUT_DIRECTORY -Employee $EMPLOYEE_NAME -DatesHeader $DATES_COLUMN -StartingDate $STARTING_DATE -MaxResults $MAX_RESULTS | Format-Table
 }
+Read-Host -Prompt "Press the ANY key.";
