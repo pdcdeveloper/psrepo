@@ -1,6 +1,3 @@
-#
-# Export-CsvFromWorkScheduleSelection.ps1
-#
 <##################################################################################
     
     Export-CsvFromWorkScheduleSelection
