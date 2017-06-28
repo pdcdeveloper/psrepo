@@ -100,7 +100,7 @@ else {
 $credential = Get-Credential -UserName $FROM -Message "Use an app password if your email account is protected by two-factor authentication.";
 if (!$credential) {
     Write-Error -Message "Credentials are required.";
-    Read-Host;
+    Read-Host -Prompt "Press the ANY key.";
     return;
 }
 

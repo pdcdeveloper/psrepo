@@ -301,12 +301,6 @@ $STARTING_DATE = "";
 $MAX_RESULTS = "256";
 $INPUT_FILE_PATH = "$PWD\testworkschedule.csv";
 $OUTPUT_DIRECTORY = $PWD;
-$ALWAYS_OVERWRITE_FILE = $true;
 
-if ($ALWAYS_OVERWRITE_FILE) {
-    Export-CsvFromWorkScheduleSelection -InputFilePath $INPUT_FILE_PATH -OutputDirectory $OUTPUT_DIRECTORY -Employee $EMPLOYEE_NAME -DatesHeader $DATES_COLUMN -StartingDate $STARTING_DATE -MaxResults $MAX_RESULTS -OverwriteOutputFile | Format-Table
-}
-else {
-    Export-CsvFromWorkScheduleSelection -InputFilePath $INPUT_FILE_PATH -OutputDirectory $OUTPUT_DIRECTORY -Employee $EMPLOYEE_NAME -DatesHeader $DATES_COLUMN -StartingDate $STARTING_DATE -MaxResults $MAX_RESULTS | Format-Table
-}
+Export-CsvFromWorkScheduleSelection -InputFilePath $INPUT_FILE_PATH -OutputDirectory $OUTPUT_DIRECTORY -Employee $EMPLOYEE_NAME -DatesHeader $DATES_COLUMN -StartingDate $STARTING_DATE -MaxResults $MAX_RESULTS -OverwriteOutputFile | Format-Table
 Read-Host -Prompt "Press the ANY key.";
